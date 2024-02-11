@@ -39,9 +39,9 @@ async function getCities(db: any) {
 export const LoginPage = () => {
 
   // TODO -JUST API TEST DELETE LATER
-  useEffect(() => {
-    console.log(getCities(API))
-  },[])
+  // useEffect(() => {
+  //   console.log(getCities(API))
+  // },[])
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();

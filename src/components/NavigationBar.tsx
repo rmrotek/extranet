@@ -1,6 +1,8 @@
 import { Box, ListItemButton, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
+// TODO Exclude some options to only admin role
+
 export const NavigationBar = () => {
   return (
     <Box sx={{  }}>
