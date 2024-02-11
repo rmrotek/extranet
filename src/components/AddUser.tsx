@@ -19,6 +19,16 @@ interface Props {
 }
 
 export const AddUser = ({ isOpen, onClose }: Props) => {
+  const handleClose = (
+    event: {},
+    reason: 'backdropClick' | 'escapeKeyDown'
+  ) => {
+    if (reason === 'backdropClick') {
+      return;
+    }
+    onClose();
+  };
+
   const { control, handleSubmit } = useForm<UserExtended>({
     defaultValues: {
       name: '',
@@ -36,20 +46,9 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
   });
 
   const onSubmit: SubmitHandler<UserExtended> = (data) => {
+    // TODO - POST DO API
     console.log(data);
   };
-
-  const handleClose = (
-    event: {},
-    reason: 'backdropClick' | 'escapeKeyDown'
-  ) => {
-    if (reason === 'backdropClick') {
-      return;
-    }
-    onClose();
-  };
-
-  const onSave = () => {};
 
   return (
     <Dialog
@@ -73,7 +72,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="name"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Imię" fullWidth {...field} />
+                  <TextField label="Imię" fullWidth required {...field} />
                 )}
               />
             </Grid>
@@ -82,7 +81,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="lastName"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Nazwisko" fullWidth {...field} />
+                  <TextField label="Nazwisko" fullWidth required {...field} />
                 )}
               />
             </Grid>
@@ -91,7 +90,12 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="phone"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Nr telefonu" fullWidth {...field} />
+                  <TextField
+                    label="Nr telefonu"
+                    fullWidth
+                    required
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -100,7 +104,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="email"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="E-mail" fullWidth {...field} />
+                  <TextField label="E-mail" fullWidth required {...field} />
                 )}
               />
             </Grid>
@@ -109,7 +113,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="street"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Ulica" fullWidth {...field} />
+                  <TextField label="Ulica" fullWidth required {...field} />
                 )}
               />
             </Grid>
@@ -118,7 +122,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="buildingNo"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Nr budynku" fullWidth {...field} />
+                  <TextField label="Nr budynku" fullWidth required {...field} />
                 )}
               />
             </Grid>
@@ -127,7 +131,12 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="apartmentNo"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Nr mieszkania" fullWidth {...field} />
+                  <TextField
+                    label="Nr mieszkania"
+                    fullWidth
+                    required
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -136,7 +145,12 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="postalCode"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Kod pocztowy" fullWidth {...field} />
+                  <TextField
+                    label="Kod pocztowy"
+                    fullWidth
+                    required
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -145,7 +159,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="city"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Miasto" fullWidth {...field} />
+                  <TextField label="Miasto" fullWidth required {...field} />
                 )}
               />
             </Grid>
@@ -156,6 +170,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 control={control}
                 render={({ field }) => (
                   <TextField label="Grupa" fullWidth select {...field}>
+                    <MenuItem value={''}>{'Brak'}</MenuItem>
                     {PH_GROUPS.map((group) => (
                       <MenuItem key={group.id} value={group.id}>
                         {group.title}
@@ -170,7 +185,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="role"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Rola" fullWidth select {...field}>
+                  <TextField label="Rola" fullWidth required select {...field}>
                     {roles.map((role) => (
                       <MenuItem key={role} value={role}>
                         {rolesMapped[role]}
@@ -185,7 +200,6 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
         <DialogActions>
           <Button
             autoFocus
-            onClick={onSave}
             color="success"
             variant="contained"
             type="submit"

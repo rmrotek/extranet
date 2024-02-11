@@ -1,4 +1,3 @@
-import * as React from 'react';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
   Typography,
@@ -11,6 +10,9 @@ import {
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { API } from '../../firebase';
 
 function Copyright(props: any) {
   return (
@@ -25,13 +27,27 @@ function Copyright(props: any) {
     </Typography>
   );
 }
-
+// TODO TEST WITH react query
+// TODO TEMP DELETE ME PLS 
+async function getCities(db: any) {
+  const citiesCol = collection(db, 'test');
+  const citySnapshot = await getDocs(citiesCol);
+  const cityList = citySnapshot.docs.map(doc => doc.data());
+  console.log(cityList)
+  return cityList;
+}
 export const LoginPage = () => {
+
+  // TODO -JUST API TEST DELETE LATER
+  useEffect(() => {
+    console.log(getCities(API))
+  },[])
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
   let from = location.state?.from?.pathname || '/';
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // TODO proper login logic
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({

@@ -293,13 +293,16 @@ export const PH_GROUPS: GroupBasic[] = [
   {
     id: 'testid1',
     title: 'Grupa 1',
-  },{
+  },
+  {
     id: 'testid2',
     title: 'Grupa 2',
-  },{
+  },
+  {
     id: 'testid3',
     title: 'Grupa 3',
-  },{
+  },
+  {
     id: 'testid4',
     title: 'Grupa 4',
   },

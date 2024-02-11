@@ -24,7 +24,7 @@ export interface GroupBasic {
 }
 
 export interface GroupExtended extends GroupBasic {
-  users: UserExtended
+  users: UserExtended[]
   plan: PlanSubject[]
 }
 
