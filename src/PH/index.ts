@@ -1,4 +1,5 @@
-import { GroupBasic, Subject, UserExtended } from '../types';
+import moment from 'moment';
+import { GroupBasic, PlanSubject, Subject, UserExtended } from '../types';
 
 export const PH_USER: UserExtended = {
   id: '1',
@@ -329,6 +330,17 @@ export const PH_SUBJECTS: Subject[] = [
   {
     id: 'testid4',
     title: 'Przedmiot 4',
+  },
+];
+
+export const PH_PLAN: PlanSubject[] = [
+  {
+    id: '1',
+    start: moment(),
+    end: moment(),
+    subjectId: 'testid1',
+    roomNo: '102',
+    userId: '',
   },
 ];
 

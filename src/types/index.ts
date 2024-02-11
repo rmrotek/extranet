@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 export interface UserBasic {
   id: string;
   name: string;
@@ -24,7 +26,7 @@ export interface GroupBasic {
 }
 
 export interface GroupExtended extends GroupBasic {
-  users: UserExtended[]
+  users: string[] // user id array
   plan: PlanSubject[]
 }
 
@@ -33,9 +35,11 @@ export interface Subject {
   title: string
 }
 
-export interface PlanSubject extends Subject {
-  start: Date
-  end: Date
+export interface PlanSubject {
+  id: string
+  start: Moment
+  end: Moment
   userId?: string // only role=teacher
   roomNo: string | number
+  subjectId: string // id from Subject
 }

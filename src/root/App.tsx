@@ -11,31 +11,37 @@ import { Groups } from '../views/Groups';
 import { Schedule } from '../views/Schedule';
 import { Subjects } from '../views/Subjects';
 import { Profile } from '../views/Profile';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
-          <Box sx={{ backgroundColor: 'rgb(238, 238, 238)', height: '100vh' }}>
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route
-                element={
-                  <RequireAuth>
-                    <MainPage />
-                  </RequireAuth>
-                }
-              >
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/groups" element={<Groups />} />
-                <Route path="/subjects" element={<Subjects />} />
-                <Route path="/schedule" element={<Schedule />} />
-                <Route path="/profile" element={<Profile />} />
-              </Route>
-            </Routes>
-          </Box>
+          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale='pl'>
+            <Box
+              sx={{ backgroundColor: 'rgb(238, 238, 238)', height: '100vh' }}
+            >
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route
+                  element={
+                    <RequireAuth>
+                      <MainPage />
+                    </RequireAuth>
+                  }
+                >
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/users" element={<Users />} />
+                  <Route path="/groups" element={<Groups />} />
+                  <Route path="/subjects" element={<Subjects />} />
+                  <Route path="/schedule" element={<Schedule />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Route>
+              </Routes>
+            </Box>
+          </LocalizationProvider>
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>

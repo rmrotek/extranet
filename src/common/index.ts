@@ -23,3 +23,6 @@ export const calendarTranslations = {
     showMore: (total: any) => `+${total} więcej`,
   },
 };
+
+
+export const dateFormatString = 'DD MM YYYY kk mm'

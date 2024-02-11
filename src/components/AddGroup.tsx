@@ -7,8 +7,11 @@ import {
   TextField,
 } from '@mui/material';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { GroupExtended } from '../types';
+import { GroupExtended, PlanSubject, UserExtended } from '../types';
 import { CustomDialogTitle } from './shared/CustomDialogTitle';
+import { useState } from 'react';
+import { AddUsersToGroup } from './AddUsersToGroup';
+import { EditPlanInGroup } from './EditPlanInGroup';
 
 interface Props {
   isOpen: boolean;
@@ -17,6 +20,14 @@ interface Props {
 
 // TODO add subjects & users
 export const AddGroup = ({ isOpen, onClose }: Props) => {
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [isPlanOpen, setIsPlanOpen] = useState(false);
+  const toggleUsersDialog = () => {
+    setIsAddUserOpen((state) => !state);
+  };
+  const togglePlanDialog = () => {
+    setIsPlanOpen((state) => !state);
+  };
   const handleClose = (
     event: {},
     reason: 'backdropClick' | 'escapeKeyDown'
@@ -27,15 +38,30 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
     onClose();
   };
 
-  const { control, handleSubmit } = useForm<GroupExtended>({
+  const { control, handleSubmit, setValue } = useForm<GroupExtended>({
     defaultValues: {
       title: '',
+      plan: [],
+      users: [],
     },
   });
 
   const onSubmit: SubmitHandler<GroupExtended> = (data) => {
     // TODO - POST DO API
     console.log(data);
+  };
+
+  const onSaveUsers = (newUsersData: UserExtended[]) => {
+    setValue(
+      'users',
+      newUsersData.map((u) => u.id)
+    );
+    toggleUsersDialog();
+  };
+  const onSavePlan = (newPlanData: PlanSubject[]) => {
+    setValue('plan', newPlanData);
+    console.log(newPlanData);
+    togglePlanDialog();
   };
 
   return (
@@ -53,7 +79,7 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
         <CustomDialogTitle onClose={onClose}>Dodaj grupę</CustomDialogTitle>
         <DialogContent dividers>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
               <Controller
                 name="title"
                 control={control}
@@ -67,11 +93,30 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
                 )}
               />
             </Grid>
+            <Grid item xs={6}>
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                onClick={toggleUsersDialog}
+              >
+                Użytkownicy
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                onClick={togglePlanDialog}
+              >
+                Przedmioty
+              </Button>
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Button
-            autoFocus
             color="success"
             variant="contained"
             type="submit"
@@ -81,6 +126,20 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
           </Button>
         </DialogActions>
       </form>
+      {isAddUserOpen && (
+        <AddUsersToGroup
+          isOpen={isAddUserOpen}
+          onClose={toggleUsersDialog}
+          onSave={onSaveUsers}
+        />
+      )}
+      {isPlanOpen && (
+        <EditPlanInGroup
+          isOpen={isPlanOpen}
+          onClose={togglePlanDialog}
+          onSave={onSavePlan}
+        />
+      )}
     </Dialog>
   );
 };
