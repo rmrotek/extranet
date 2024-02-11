@@ -1,4 +1,4 @@
-import { GroupBasic, UserExtended } from '../types';
+import { GroupBasic, Subject, UserExtended } from '../types';
 
 export const PH_USER: UserExtended = {
   id: '1',
@@ -305,5 +305,29 @@ export const PH_GROUPS: GroupBasic[] = [
   {
     id: 'testid4',
     title: 'Grupa 4',
+  },
+];
+
+export const PH_SUBJECT: Subject = {
+  id: 'testid1',
+  title: 'Przedmiot 1',
+};
+
+export const PH_SUBJECTS: Subject[] = [
+  {
+    id: 'testid1',
+    title: 'Przedmiot 1',
+  },
+  {
+    id: 'testid2',
+    title: 'Przedmiot 2',
+  },
+  {
+    id: 'testid3',
+    title: 'Przedmiot 3',
+  },
+  {
+    id: 'testid4',
+    title: 'Przedmiot 4',
   },
 ];
