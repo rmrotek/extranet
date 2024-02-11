@@ -1,4 +1,4 @@
-import { Box, ListItemButton, Paper, Typography } from '@mui/material';
+import { Box, ListItemButton, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
 export const NavigationBar = () => {

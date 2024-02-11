@@ -7,7 +7,7 @@ export interface UserBasic {
   apartmentNo: string | number;
   postalCode: string | number;
   city: string;
-  phone: number;
+  phone: number | string;
   email: string;
   role: Role
 }

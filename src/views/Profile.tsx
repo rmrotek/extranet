@@ -1,20 +1,6 @@
 import { Box, Divider, Grid, TextField, Typography } from '@mui/material';
-import { UserExtended } from '../types';
+import { PH_USER } from '../PH';
 
-const PH_USER: UserExtended = {
-  id: '1',
-  name: 'name test',
-  lastName: 'last name test',
-  street: 'test street',
-  buildingNo: '2A',
-  apartmentNo: '3',
-  city: 'test city',
-  email: 'test@email.test',
-  groupId: 'testgrpid1',
-  phone: 123123123,
-  postalCode: 11111,
-  role: 'STUDENT',
-};
 // TODO GET REAL DATA
 export const Profile = () => {
   return (

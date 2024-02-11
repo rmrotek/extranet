@@ -7,11 +7,7 @@ import {
   Box,
   Avatar,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Button,
-  Grid,
-  Link,
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
