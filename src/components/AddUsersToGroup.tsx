@@ -12,10 +12,11 @@ import {
   TextField,
 } from '@mui/material';
 import { CustomDialogTitle } from './shared/CustomDialogTitle';
-import { PH_USERS } from '../PH';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ChangeEvent, useState } from 'react';
 import { UserExtended } from '../types';
+import { useQuery } from 'react-query';
+import { getUsersByRole } from '../firebase/dataReaders';
 
 interface Props {
   isOpen: boolean;
@@ -33,6 +34,7 @@ export const AddUsersToGroup = ({ isOpen, onClose, onSave }: Props) => {
     }
     onClose();
   };
+  const { data = [] } = useQuery(['students'], () => getUsersByRole('STUDENT'));
 
   const [currentUsers, setCurrentUsers] = useState<UserExtended[]>([]);
 
@@ -40,7 +42,7 @@ export const AddUsersToGroup = ({ isOpen, onClose, onSave }: Props) => {
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const id = event.target.value;
-    const foundUser = PH_USERS.find((user) => user.id === id);
+    const foundUser = data.find((user) => user.id === id);
     if (!foundUser) {
       return;
     }
@@ -78,7 +80,7 @@ export const AddUsersToGroup = ({ isOpen, onClose, onSave }: Props) => {
               onChange={handleAddToCurrent}
               value={''}
             >
-              {PH_USERS.map((user) => (
+              {data.map((user) => (
                 <MenuItem key={user.id} value={user.id}>
                   {`${user.name} ${user.lastName}`}
                 </MenuItem>
@@ -111,11 +113,7 @@ export const AddUsersToGroup = ({ isOpen, onClose, onSave }: Props) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button
-          color="success"
-          variant="contained"
-          onClick={handleSave}
-        >
+        <Button color="success" variant="contained" onClick={handleSave}>
           Zapisz
         </Button>
       </DialogActions>

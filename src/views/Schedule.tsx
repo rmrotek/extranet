@@ -15,6 +15,11 @@ import { calendarTranslations } from '../common';
 import 'moment/locale/pl'
 const mLocalizer = momentLocalizer(moment);
 
+// const timestamp = moment().unix()
+// console.log('timestamp', timestamp)
+// console.log('date',  moment.unix(1707760909).toDate())
+// console.log('date2',  new Date())
+
 export const Schedule = () => {
   const [grp, setGrp] = useState<string>('');
 

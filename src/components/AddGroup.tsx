@@ -12,6 +12,12 @@ import { CustomDialogTitle } from './shared/CustomDialogTitle';
 import { useState } from 'react';
 import { AddUsersToGroup } from './AddUsersToGroup';
 import { EditPlanInGroup } from './EditPlanInGroup';
+import { useMutation, useQueryClient } from 'react-query';
+import { setGroup } from '../firebase/dataSetters';
+import { enqueueSnackbar } from 'notistack';
+import { convertGroupToApi } from '../common';
+import { LoadingButton } from '@mui/lab';
+import SaveIcon from '@mui/icons-material/Save';
 
 interface Props {
   isOpen: boolean;
@@ -20,6 +26,8 @@ interface Props {
 
 // TODO add subjects & users
 export const AddGroup = ({ isOpen, onClose }: Props) => {
+  const queryClient = useQueryClient();
+
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isPlanOpen, setIsPlanOpen] = useState(false);
   const toggleUsersDialog = () => {
@@ -38,6 +46,17 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
     onClose();
   };
 
+  const { mutate, isLoading } = useMutation(setGroup, {
+    onSuccess() {
+      enqueueSnackbar({
+        message: 'Grupa została utworzona',
+        variant: 'success',
+      });
+      queryClient.invalidateQueries('groups');
+      onClose();
+    },
+  });
+
   const { control, handleSubmit, setValue } = useForm<GroupExtended>({
     defaultValues: {
       title: '',
@@ -47,8 +66,8 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
   });
 
   const onSubmit: SubmitHandler<GroupExtended> = (data) => {
-    // TODO - POST DO API
-    console.log(data);
+    const dataConverted = convertGroupToApi(data);
+    mutate({ data: dataConverted });
   };
 
   const onSaveUsers = (newUsersData: UserExtended[]) => {
@@ -60,7 +79,6 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
   };
   const onSavePlan = (newPlanData: PlanSubject[]) => {
     setValue('plan', newPlanData);
-    console.log(newPlanData);
     togglePlanDialog();
   };
 
@@ -88,6 +106,7 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
                     label="Nazwa grupy"
                     fullWidth
                     required
+                    disabled={isLoading}
                     {...field}
                   />
                 )}
@@ -99,6 +118,7 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
                 variant="contained"
                 fullWidth
                 onClick={toggleUsersDialog}
+                disabled={isLoading}
               >
                 Użytkownicy
               </Button>
@@ -109,6 +129,7 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
                 variant="contained"
                 fullWidth
                 onClick={togglePlanDialog}
+                disabled={isLoading}
               >
                 Przedmioty
               </Button>
@@ -116,30 +137,30 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
+          <LoadingButton
             color="success"
-            variant="contained"
+            loading={isLoading}
+            loadingPosition="start"
             type="submit"
-            // TODO   disabled={}
+            startIcon={<SaveIcon />}
+            variant="contained"
           >
-            Zapisz
-          </Button>
+            <span>Zapisz</span>
+          </LoadingButton>
         </DialogActions>
       </form>
-      {isAddUserOpen && (
-        <AddUsersToGroup
-          isOpen={isAddUserOpen}
-          onClose={toggleUsersDialog}
-          onSave={onSaveUsers}
-        />
-      )}
-      {isPlanOpen && (
-        <EditPlanInGroup
-          isOpen={isPlanOpen}
-          onClose={togglePlanDialog}
-          onSave={onSavePlan}
-        />
-      )}
+
+      <AddUsersToGroup
+        isOpen={isAddUserOpen}
+        onClose={toggleUsersDialog}
+        onSave={onSaveUsers}
+      />
+
+      <EditPlanInGroup
+        isOpen={isPlanOpen}
+        onClose={togglePlanDialog}
+        onSave={onSavePlan}
+      />
     </Dialog>
   );
 };

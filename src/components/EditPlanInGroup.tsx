@@ -10,13 +10,14 @@ import {
   ListItemText,
 } from '@mui/material';
 import { CustomDialogTitle } from './shared/CustomDialogTitle';
-import { PH_PLAN } from '../PH';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PlanSubject } from '../types';
 import moment from 'moment';
-import { dateFormatString } from '../common';
+import { arrayToKeyObject, dateFormatString } from '../common';
 import { AddPlan } from './AddPlan';
+import { useQuery } from 'react-query';
+import { getAllSubjects } from '../firebase/dataReaders';
 
 interface Props {
   isOpen: boolean;
@@ -34,8 +35,12 @@ export const EditPlanInGroup = ({ isOpen, onClose, onSave }: Props) => {
     }
     onClose();
   };
+  const { data: subjectsData = [] } = useQuery(['subjects'], getAllSubjects);
 
-  const [currentPlan, setCurrentPlan] = useState<PlanSubject[]>(PH_PLAN);
+  const subjectsMapped = useMemo(() => {
+    return arrayToKeyObject(subjectsData, 'id');
+  }, [subjectsData]);
+  const [currentPlan, setCurrentPlan] = useState<PlanSubject[]>([]);
 
   const handleDeleteFromCurrent = (id: string) => {
     setCurrentPlan((state) => state.filter((u) => u.id !== id));
@@ -64,7 +69,10 @@ export const EditPlanInGroup = ({ isOpen, onClose, onSave }: Props) => {
       <DialogContent dividers>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <AddPlan onSave={handleSaveSinglePlan} />
+            <AddPlan
+              onSave={handleSaveSinglePlan}
+              subjectsData={subjectsData}
+            />
           </Grid>
           <Grid item xs={12}>
             <List dense>
@@ -82,7 +90,7 @@ export const EditPlanInGroup = ({ isOpen, onClose, onSave }: Props) => {
                   }
                 >
                   <ListItemText
-                    primary={`${plan.id}, sala: ${plan.roomNo}`}
+                    primary={`${subjectsMapped[plan.subjectId].title}, sala: ${plan.roomNo}`}
                     secondary={`od: ${moment(plan.start).format(
                       dateFormatString
                     )} do: ${moment(plan.end).format(dateFormatString)}`}

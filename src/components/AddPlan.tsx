@@ -1,30 +1,33 @@
 import { Button, Grid, MenuItem, TextField } from '@mui/material';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { PlanSubject } from '../types';
-import { PH_SUBJECTS, PH_USERS } from '../PH';
+import { PlanSubject, Subject } from '../types';
 import { v4 as createId } from 'uuid';
 import { MobileDateTimePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
-console.log(moment());
+import { useQuery } from 'react-query';
+import { getUsersByRole } from '../firebase/dataReaders';
 interface Props {
   onSave: (newPlan: PlanSubject) => void;
+  subjectsData: Subject[];
 }
 
-export const AddPlan = ({ onSave }: Props) => {
+export const AddPlan = ({ onSave, subjectsData }: Props) => {
+  const { data: usersData = [] } = useQuery(['teachers'], () =>
+    getUsersByRole('TEACHER')
+  );
+
   const { control, handleSubmit, reset } = useForm<PlanSubject>({
     defaultValues: {
-      id: createId(),
       subjectId: '',
       roomNo: '',
       userId: '',
       start: moment(),
-      end: moment(),
+      end: moment().add(15, 'm'),
     },
   });
 
   const onSubmit: SubmitHandler<PlanSubject> = (data) => {
-    console.log('AddPlan', data);
-    onSave(data);
+    onSave({ ...data, id: createId() });
     reset();
   };
 
@@ -47,7 +50,7 @@ export const AddPlan = ({ onSave }: Props) => {
             control={control}
             render={({ field }) => (
               <TextField label="Przedmiot" fullWidth required select {...field}>
-                {PH_SUBJECTS.map((subject) => (
+                {subjectsData.map((subject) => (
                   <MenuItem key={subject.id} value={subject.id}>
                     {`${subject.title}`}
                   </MenuItem>
@@ -96,7 +99,7 @@ export const AddPlan = ({ onSave }: Props) => {
                 select
                 {...field}
               >
-                {PH_USERS.map((user) => (
+                {usersData.map((user) => (
                   <MenuItem key={user.id} value={user.id}>
                     {`${user.name} ${user.lastName}`}
                   </MenuItem>

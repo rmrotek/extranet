@@ -5,10 +5,11 @@ import {
   MaterialReactTable,
 } from 'material-react-table';
 import { useState, useMemo } from 'react';
-import { PH_GROUPS } from '../PH';
-import { GroupBasic } from '../types';
+import { GroupExtended } from '../types';
 import { AddGroup } from '../components/AddGroup';
 import { MRT_Localization_PL } from 'material-react-table/locales/pl';
+import { useQuery } from 'react-query';
+import { getAllGroups } from '../firebase/dataReaders';
 
 export const Groups = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -17,24 +18,34 @@ export const Groups = () => {
     setIsAddOpen((state) => !state);
   };
 
-  const columns = useMemo<MRT_ColumnDef<GroupBasic>[]>(
+  const { data: groupsData = [], isLoading } = useQuery(['groups'], getAllGroups);
+
+
+  const columns = useMemo<MRT_ColumnDef<GroupExtended>[]>(
     () => [
-      {
-        accessorKey: 'id',
-        header: 'Id',
-        size: 100,
-      },
       {
         accessorKey: 'title',
         header: 'Nazwa',
         size: 100,
+      },
+      {
+        accessorKey: 'users',
+        header: 'Uczniowie',
+        size: 100,
+        accessorFn: ({ users }) => users.length,
+      },
+      {
+        accessorKey: 'plan',
+        header: 'Lekcje',
+        size: 100,
+        accessorFn: ({ plan }) => plan.length,
       },
     ],
     []
   );
 
   const table = useMaterialReactTable({
-    data: PH_GROUPS,
+    data: groupsData,
     columns,
     enableRowSelection: false,
     initialState: {

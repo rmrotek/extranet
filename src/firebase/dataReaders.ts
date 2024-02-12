@@ -10,7 +10,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { firestoreAPI } from './client';
-import { Role, Subject, UserExtended } from '../types';
+import { GroupExtended, Role, Subject, UserExtended } from '../types';
 
 const convertDocs = <T>(
   snap: QuerySnapshot<DocumentData, DocumentData>
@@ -54,4 +54,10 @@ export const getAllSubjects = async () => {
   const snapshot = await getDocs(collection(firestoreAPI, 'subjects'));
 
   return convertDocs<Subject>(snapshot);
+};
+
+export const getAllGroups = async () => {
+  const snapshot = await getDocs(collection(firestoreAPI, 'groups'));
+
+  return convertDocs<GroupExtended>(snapshot);
 };

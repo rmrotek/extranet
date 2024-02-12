@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { firestoreAPI } from './client';
-import { Subject, UserExtended } from '../types';
+import { GroupAPI, Subject, UserExtended } from '../types';
 
 export const setUser = async ({
   newUserData,
@@ -19,5 +19,10 @@ export const setSubject = async ({ data }: { data: Subject }) => {
   await addDoc(collection(firestoreAPI, 'subjects'), {
     title: data.title,
   });
+  return;
+};
+
+export const setGroup = async ({ data }: { data: GroupAPI }) => {
+  await addDoc(collection(firestoreAPI, 'groups'), data);
   return;
 };
