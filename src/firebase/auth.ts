@@ -1,4 +1,8 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { firebaseApp } from './client';
 
 interface AuthDataPlain {
@@ -12,4 +16,17 @@ export const createAuthUser = ({ email, password }: AuthDataPlain) => {
   const promise = createUserWithEmailAndPassword(auth, email, password);
 
   return promise;
+};
+
+export const logInAuthUser = ({ email, password }: AuthDataPlain) => {
+  return signInWithEmailAndPassword(auth, email, password);
+  // .then((userCredential) => {
+  //   // Signed in
+  //   const user = userCredential.user;
+  //   // ...
+  // })
+  // .catch((error) => {
+  //   const errorCode = error.code;
+  //   const errorMessage = error.message;
+  // });
 };

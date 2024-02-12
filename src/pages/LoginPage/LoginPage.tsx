@@ -6,13 +6,15 @@ import {
   Box,
   Avatar,
   TextField,
-  Button,
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-// import { API } from '../../firebase';
+import { useState } from 'react';
+import { useMutation } from 'react-query';
+import { logInAuthUser } from '../../firebase/auth';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { LoginInForm } from '../../types';
+import { useUser } from '../../atoms';
+import { LoadingButton } from '@mui/lab';
 
 function Copyright(props: any) {
   return (
@@ -27,44 +29,40 @@ function Copyright(props: any) {
     </Typography>
   );
 }
-// TODO TEST WITH react query
-// TODO TEMP DELETE ME PLS 
-async function getCities(db: any) {
-  const citiesCol = collection(db, 'test');
-  const citySnapshot = await getDocs(citiesCol);
-  const cityList = citySnapshot.docs.map(doc => doc.data());
-  console.log(cityList)
-  return cityList;
-}
-export const LoginPage = () => {
 
-  // TODO -JUST API TEST DELETE LATER
-  // useEffect(() => {
-  //   console.log(getCities(API))
-  // },[])
+export const LoginPage = () => {
   let navigate = useNavigate();
   let location = useLocation();
-  let auth = useAuth();
   let from = location.state?.from?.pathname || '/';
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    // TODO proper login logic
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('username'),
-      password: data.get('password'),
-    });
-    let username = data.get('username') as string;
-
-    auth.signin(username, () => {
-      // Send them back to the page they tried to visit when they were
-      // redirected to the login page. Use { replace: true } so we don't create
-      // another entry in the history stack for the login page.  This means that
-      // when they get to the protected page and click the back button, they
-      // won't end up back on the login page, which is also really nice for the
-      // user experience.
+  const { currentUser, setCurrentUser } = useUser();
+  console.log(currentUser);
+  const [errorMsg, setErrorMsg] = useState('');
+  const { mutate: logIn, isLoading } = useMutation(logInAuthUser, {
+    onSuccess(data) {
+      setCurrentUser(data.user);
       navigate(from, { replace: true });
-    });
+    },
+    onError(error) {
+      setErrorMsg('Błędne dane logowania');
+    },
+  });
+
+  const { control, handleSubmit } = useForm<LoginInForm>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const handleSubmitForm: SubmitHandler<LoginInForm> = ({
+    email,
+    password,
+  }) => {
+    if (!email || !password) {
+      return;
+    }
+
+    logIn({ email, password });
   };
 
   return (
@@ -83,46 +81,57 @@ export const LoginPage = () => {
         <Typography component="h1" variant="h5">
           Extranet - Logowanie
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Nazwa użytkownika"
-            name="username"
-            autoComplete="username"
-            autoFocus
+        <Box
+          component="form"
+          onSubmit={handleSubmit(handleSubmitForm)}
+          sx={{ mt: 1 }}
+        >
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="E-mail"
+                autoComplete="email"
+                autoFocus
+                error={!!errorMsg}
+                {...field}
+              />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Hasło"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Hasło"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                error={!!errorMsg}
+                helperText={errorMsg ? errorMsg : ' '}
+                {...field}
+              />
+            )}
           />
-          {/* <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          /> */}
-          <Button
+          <LoadingButton
+            color="primary"
+            loading={isLoading}
+            loadingPosition="start"
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Zaloguj
-          </Button>
-          {/* <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-          </Grid> */}
+            <span>Zaloguj</span>
+          </LoadingButton>
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />

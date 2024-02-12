@@ -61,3 +61,8 @@ export interface CustomCalendarEvent extends Event {
   roomNo: string | number;
   teacher?: string;
 }
+
+export interface LoginInForm {
+  email: string;
+  password: string;
+}
