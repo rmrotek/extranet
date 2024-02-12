@@ -9,6 +9,11 @@ import {
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Subject } from '../types';
 import { CustomDialogTitle } from './shared/CustomDialogTitle';
+import { useMutation, useQueryClient } from 'react-query';
+import { enqueueSnackbar } from 'notistack';
+import { setSubject } from '../firebase/dataSetters';
+import { LoadingButton } from '@mui/lab';
+import SaveIcon from '@mui/icons-material/Save';
 
 interface Props {
   isOpen: boolean;
@@ -25,6 +30,18 @@ export const AddSubject = ({ isOpen, onClose }: Props) => {
     }
     onClose();
   };
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation(setSubject, {
+    onSuccess() {
+      enqueueSnackbar({
+        message: 'Przedmiot został utworzony',
+        variant: 'success',
+      });
+      queryClient.invalidateQueries('subjects');
+      onClose();
+    },
+  });
 
   const { control, handleSubmit } = useForm<Subject>({
     defaultValues: {
@@ -33,8 +50,7 @@ export const AddSubject = ({ isOpen, onClose }: Props) => {
   });
 
   const onSubmit: SubmitHandler<Subject> = (data) => {
-    // TODO - POST DO API
-    console.log(data);
+    mutate({ data });
   };
 
   return (
@@ -61,6 +77,7 @@ export const AddSubject = ({ isOpen, onClose }: Props) => {
                     label="Nazwa przedmiotu"
                     fullWidth
                     required
+                    disabled={isLoading}
                     {...field}
                   />
                 )}
@@ -69,15 +86,16 @@ export const AddSubject = ({ isOpen, onClose }: Props) => {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            autoFocus
+          <LoadingButton
             color="success"
-            variant="contained"
+            loading={isLoading}
+            loadingPosition="start"
             type="submit"
-            // TODO   disabled={}
+            startIcon={<SaveIcon />}
+            variant="contained"
           >
-            Zapisz
-          </Button>
+            <span>Zapisz</span>
+          </LoadingButton>
         </DialogActions>
       </form>
     </Dialog>

@@ -9,8 +9,10 @@ import { UserExtended } from '../types';
 import { AddUser } from '../components/AddUser';
 import { useQuery } from 'react-query';
 import { getAllUsers } from '../firebase/dataReaders';
+import { MRT_Localization_PL } from 'material-react-table/locales/pl';
 
 // TODO delete users
+// TODO load indicator when data fetching
 export const Users = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
@@ -18,7 +20,7 @@ export const Users = () => {
     setIsAddOpen((state) => !state);
   };
 
-  const { data } = useQuery(['users'], () => getAllUsers());
+  const { data } = useQuery(['users'], getAllUsers);
 
   const columns = useMemo<MRT_ColumnDef<UserExtended>[]>(
     () => [
@@ -77,6 +79,7 @@ export const Users = () => {
         Dodaj
       </Button>
     ),
+    localization: MRT_Localization_PL,
   });
 
   return (

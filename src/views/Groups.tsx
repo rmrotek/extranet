@@ -8,6 +8,7 @@ import { useState, useMemo } from 'react';
 import { PH_GROUPS } from '../PH';
 import { GroupBasic } from '../types';
 import { AddGroup } from '../components/AddGroup';
+import { MRT_Localization_PL } from 'material-react-table/locales/pl';
 
 export const Groups = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -63,6 +64,7 @@ export const Groups = () => {
         Dodaj
       </Button>
     ),
+    localization: MRT_Localization_PL,
   });
 
   return (
