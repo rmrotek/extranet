@@ -20,14 +20,15 @@ import {
   getUsersByRole,
 } from '../firebase/dataReaders';
 import { CustomCalendarEvent } from '../types';
+import { useUserData } from '../atoms';
 const mLocalizer = momentLocalizer(moment);
 
 // TODO fetch plan based on current user groupId, disable select if not admin
 // TODO loader?
 // TODO translate/improve agenda view?
 export const Schedule = () => {
-  const [grp, setGrp] = useState<string>('');
-
+  const { userData } = useUserData();
+  const [grp, setGrp] = useState<string>(userData?.groupId ?? '');
   const handleGrpChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -68,7 +69,7 @@ export const Schedule = () => {
     }),
     []
   );
-
+  const isStudent = userData?.role === 'STUDENT';
   return (
     <Box sx={{ height: '100%' }}>
       <Grid container spacing={2}>
@@ -76,21 +77,23 @@ export const Schedule = () => {
           <Typography variant="h4">Plan lekcji</Typography>
           <Divider />
         </Grid>
-        <Grid item xs={6}>
-          <TextField
-            label="Grupa"
-            fullWidth
-            select
-            value={grp}
-            onChange={handleGrpChange}
-          >
-            {groupsData.map((group) => (
-              <MenuItem key={group.id} value={group.id}>
-                {group.title}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
+        {!isStudent && (
+          <Grid item xs={6}>
+            <TextField
+              label="Grupa"
+              fullWidth
+              select
+              value={grp}
+              onChange={handleGrpChange}
+            >
+              {groupsData.map((group) => (
+                <MenuItem key={group.id} value={group.id}>
+                  {group.title}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        )}
         <Grid item xs={12} sx={{ height: 600 }}>
           <Calendar
             key={groupData?.id}

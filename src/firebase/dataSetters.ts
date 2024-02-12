@@ -1,4 +1,10 @@
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  setDoc,
+  writeBatch,
+} from 'firebase/firestore';
 import { firestoreAPI } from './client';
 import { GroupAPI, Subject, UserExtended } from '../types';
 
@@ -9,20 +15,32 @@ export const setUser = async ({
   newUserData: UserExtended;
   userId: string;
 }) => {
-  await setDoc(doc(firestoreAPI, 'users', userId), newUserData);
-  return;
+  return await setDoc(doc(firestoreAPI, 'users', userId), newUserData);
 };
 
-// TODO FINISH AUTH - logging in
-
 export const setSubject = async ({ data }: { data: Subject }) => {
-  await addDoc(collection(firestoreAPI, 'subjects'), {
+  return await addDoc(collection(firestoreAPI, 'subjects'), {
     title: data.title,
   });
-  return;
 };
 
 export const setGroup = async ({ data }: { data: GroupAPI }) => {
-  await addDoc(collection(firestoreAPI, 'groups'), data);
-  return;
+  return await addDoc(collection(firestoreAPI, 'groups'), data);
+};
+
+export const updateUsersWithGroup = async ({
+  userIds,
+  groupId,
+}: {
+  userIds: string[];
+  groupId: string;
+}) => {
+  const batch = writeBatch(firestoreAPI);
+
+  userIds.forEach((id) => {
+    const userRef = doc(firestoreAPI, 'users', id);
+    batch.update(userRef, { groupId });
+  });
+
+  batch.commit();
 };

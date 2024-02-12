@@ -18,7 +18,13 @@ export const MainPage = ({ children }: Props) => {
         height: '95%',
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Box>
           <Logo />
         </Box>

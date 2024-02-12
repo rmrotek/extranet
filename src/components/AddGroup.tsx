@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { AddUsersToGroup } from './AddUsersToGroup';
 import { EditPlanInGroup } from './EditPlanInGroup';
 import { useMutation, useQueryClient } from 'react-query';
-import { setGroup } from '../firebase/dataSetters';
+import { setGroup, updateUsersWithGroup } from '../firebase/dataSetters';
 import { enqueueSnackbar } from 'notistack';
 import { convertGroupToApi } from '../common';
 import { LoadingButton } from '@mui/lab';
@@ -46,14 +46,24 @@ export const AddGroup = ({ isOpen, onClose }: Props) => {
     onClose();
   };
 
-  const { mutate, isLoading } = useMutation(setGroup, {
+  const { mutate: addUsersToGroup } = useMutation(updateUsersWithGroup, {
     onSuccess() {
       enqueueSnackbar({
-        message: 'Grupa została utworzona',
+        message: 'Użytkownicy zostali przypisani do grup',
         variant: 'success',
       });
       queryClient.invalidateQueries('groups');
       onClose();
+    },
+  });
+
+  const { mutate, isLoading } = useMutation(setGroup, {
+    onSuccess(data, variables) {
+      enqueueSnackbar({
+        message: 'Grupa została utworzona',
+        variant: 'success',
+      });
+      addUsersToGroup({ groupId: data.id, userIds: variables.data.users });
     },
   });
 

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { CustomCalendarEvent, GroupAPI, GroupExtended, Role, Subject, UserExtended } from '../types';
 
 export const roles: Role[] = ['ADMIN', 'STUDENT', 'TEACHER'];

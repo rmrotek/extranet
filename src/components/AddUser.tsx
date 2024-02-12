@@ -10,7 +10,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { UserExtended } from '../types';
 import { roles, rolesMapped } from '../common';
 import { CustomDialogTitle } from './shared/CustomDialogTitle';
-import { PH_GROUPS } from '../PH';
 import { useMutation, useQueryClient } from 'react-query';
 import { setUser } from '../firebase/dataSetters';
 import { createAuthUser } from '../firebase/auth';
@@ -72,7 +71,6 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
       street: '',
       city: '',
       email: '',
-      groupId: '',
       phone: '',
       postalCode: '',
       role: 'STUDENT',
@@ -231,29 +229,6 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                     disabled={dataLoading}
                     {...field}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              {/* TODO Make select from api data */}
-              <Controller
-                name="groupId"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Grupa"
-                    fullWidth
-                    select
-                    disabled={dataLoading}
-                    {...field}
-                  >
-                    <MenuItem value={''}>{'Brak'}</MenuItem>
-                    {PH_GROUPS.map((group) => (
-                      <MenuItem key={group.id} value={group.id}>
-                        {group.title}
-                      </MenuItem>
-                    ))}
-                  </TextField>
                 )}
               />
             </Grid>

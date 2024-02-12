@@ -1,8 +1,32 @@
 import { Box, Divider, Grid, TextField, Typography } from '@mui/material';
-import { PH_USER } from '../PH';
+import { useUserData } from '../atoms';
+import { useQuery } from 'react-query';
+import { getGroup } from '../firebase/dataReaders';
 
-// TODO GET REAL DATA
 export const Profile = () => {
+  const { userData } = useUserData();
+  const { data: groupData } = useQuery(
+    ['group', userData?.groupId],
+    () => getGroup(groupId as string),
+    { enabled: !!userData?.groupId }
+  );
+  if (!userData) {
+    return null;
+  }
+  const {
+    name,
+    lastName,
+    apartmentNo,
+    buildingNo,
+    city,
+    email,
+    phone,
+    postalCode,
+    role,
+    street,
+    groupId,
+  } = userData;
+
   return (
     <Box>
       <Grid container spacing={2}>
@@ -13,7 +37,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Imię"
-            value={PH_USER.name}
+            value={name}
             inputProps={{ readOnly: true }}
             fullWidth
           />
@@ -21,7 +45,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Nazwisko"
-            value={PH_USER.lastName}
+            value={lastName}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -29,7 +53,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Nr telefonu"
-            value={PH_USER.phone}
+            value={phone}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -37,7 +61,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="E-mail"
-            value={PH_USER.email}
+            value={email}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -45,7 +69,7 @@ export const Profile = () => {
         <Grid item xs={12} md={4}>
           <TextField
             label="Ulica"
-            value={PH_USER.street}
+            value={street}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -53,7 +77,7 @@ export const Profile = () => {
         <Grid item xs={12} md={4}>
           <TextField
             label="Nr budynku"
-            value={PH_USER.buildingNo}
+            value={buildingNo}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -61,7 +85,7 @@ export const Profile = () => {
         <Grid item xs={12} md={4}>
           <TextField
             label="Nr mieszkania"
-            value={PH_USER.apartmentNo}
+            value={apartmentNo}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -69,7 +93,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Kod pocztowy"
-            value={PH_USER.postalCode}
+            value={postalCode}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -77,7 +101,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Miasto"
-            value={PH_USER.city}
+            value={city}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -85,7 +109,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Grupa"
-            value={PH_USER.groupId}
+            value={groupData?.title}
             fullWidth
             inputProps={{ readOnly: true }}
           />
@@ -93,7 +117,7 @@ export const Profile = () => {
         <Grid item xs={12} md={6}>
           <TextField
             label="Rola"
-            value={PH_USER.role}
+            value={role}
             fullWidth
             inputProps={{ readOnly: true }}
           />

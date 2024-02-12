@@ -6,7 +6,6 @@ import {
 } from 'material-react-table';
 import { MRT_Localization_PL } from 'material-react-table/locales/pl';
 import { useState, useMemo } from 'react';
-import { PH_SUBJECTS } from '../PH';
 import { Subject } from '../types';
 import { AddSubject } from '../components/AddSubject';
 import { useQuery } from 'react-query';
