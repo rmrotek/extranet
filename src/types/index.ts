@@ -17,6 +17,9 @@ export interface UserBasic {
 export interface UserExtended extends UserBasic {
   groupId?: string // only role=student
 }
+export interface UserExtendedWithPassword extends UserExtended {
+  password: string
+}
 
 export type Role = 'ADMIN' | 'STUDENT' | 'TEACHER'
 

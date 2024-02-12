@@ -7,15 +7,18 @@ import {
 import { useMemo, useState } from 'react';
 import { UserExtended } from '../types';
 import { AddUser } from '../components/AddUser';
-import { PH_USERS } from '../PH';
+import { useQuery } from 'react-query';
+import { getAllUsers } from '../firebase/dataReaders';
 
-
+// TODO delete users
 export const Users = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const toggleDialog = () => {
     setIsAddOpen((state) => !state);
   };
+
+  const { data } = useQuery(['users'], () => getAllUsers());
 
   const columns = useMemo<MRT_ColumnDef<UserExtended>[]>(
     () => [
@@ -44,7 +47,7 @@ export const Users = () => {
   );
 
   const table = useMaterialReactTable({
-    data: PH_USERS,
+    data: data ?? [],
     columns,
     enableRowSelection: false,
     initialState: {
@@ -70,7 +73,9 @@ export const Users = () => {
       variant: 'outlined',
     },
     renderTopToolbarCustomActions: () => (
-      <Button variant="contained" onClick={toggleDialog}>Dodaj</Button>
+      <Button variant="contained" onClick={toggleDialog}>
+        Dodaj
+      </Button>
     ),
   });
 

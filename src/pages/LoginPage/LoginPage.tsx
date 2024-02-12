@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { API } from '../../firebase';
+// import { API } from '../../firebase';
 
 function Copyright(props: any) {
   return (

@@ -1,5 +1,4 @@
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,12 +11,19 @@ import { UserExtended } from '../types';
 import { roles, rolesMapped } from '../common';
 import { CustomDialogTitle } from './shared/CustomDialogTitle';
 import { PH_GROUPS } from '../PH';
+import { useMutation, useQueryClient } from 'react-query';
+import { setUser } from '../firebase/dataSetters';
+import { createAuthUser } from '../firebase/auth';
+import { useState } from 'react';
+import { useSnackbar } from 'notistack';
+import { LoadingButton } from '@mui/lab';
+import SaveIcon from '@mui/icons-material/Save';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
-
+// TODO get groups
 export const AddUser = ({ isOpen, onClose }: Props) => {
   const handleClose = (
     event: {},
@@ -28,8 +34,36 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
     }
     onClose();
   };
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { control, handleSubmit } = useForm<UserExtended>({
+  const [password, setPassword] = useState('');
+
+  const { mutate: saveUserData, isLoading: isSaveUserLoading } = useMutation(
+    setUser,
+    {
+      onSuccess() {
+        enqueueSnackbar({
+          message: 'Użytkownik został utworzony',
+          variant: 'success',
+        });
+        queryClient.invalidateQueries('users');
+        onClose();
+      },
+    }
+  );
+  const { mutate: saveUserAuth, isLoading: isSaveAuthLoading } = useMutation(
+    createAuthUser,
+    {
+      onSuccess(data) {
+        saveUserData({ newUserData: getValues(), userId: data.user.uid });
+      },
+    }
+  );
+
+  const dataLoading = isSaveAuthLoading || isSaveUserLoading;
+
+  const { control, handleSubmit, getValues } = useForm<UserExtended>({
     defaultValues: {
       name: '',
       lastName: '',
@@ -44,10 +78,8 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
       role: 'STUDENT',
     },
   });
-
   const onSubmit: SubmitHandler<UserExtended> = (data) => {
-    // TODO - POST DO API
-    console.log(data);
+    saveUserAuth({ email: data.email, password });
   };
 
   return (
@@ -72,7 +104,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="name"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Imię" fullWidth required {...field} />
+                  <TextField
+                    label="Imię"
+                    fullWidth
+                    required
+                    disabled={dataLoading}
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -81,7 +119,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="lastName"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Nazwisko" fullWidth required {...field} />
+                  <TextField
+                    label="Nazwisko"
+                    fullWidth
+                    disabled={dataLoading}
+                    required
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -94,6 +138,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                     label="Nr telefonu"
                     fullWidth
                     required
+                    disabled={dataLoading}
                     {...field}
                   />
                 )}
@@ -104,7 +149,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="email"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="E-mail" fullWidth required {...field} />
+                  <TextField
+                    label="E-mail"
+                    fullWidth
+                    required
+                    disabled={dataLoading}
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -113,7 +164,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="street"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Ulica" fullWidth required {...field} />
+                  <TextField
+                    label="Ulica"
+                    fullWidth
+                    required
+                    disabled={dataLoading}
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -122,7 +179,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="buildingNo"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Nr budynku" fullWidth required {...field} />
+                  <TextField
+                    label="Nr budynku"
+                    fullWidth
+                    required
+                    disabled={dataLoading}
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -135,6 +198,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                     label="Nr mieszkania"
                     fullWidth
                     required
+                    disabled={dataLoading}
                     {...field}
                   />
                 )}
@@ -149,6 +213,7 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                     label="Kod pocztowy"
                     fullWidth
                     required
+                    disabled={dataLoading}
                     {...field}
                   />
                 )}
@@ -159,7 +224,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="city"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Miasto" fullWidth required {...field} />
+                  <TextField
+                    label="Miasto"
+                    fullWidth
+                    required
+                    disabled={dataLoading}
+                    {...field}
+                  />
                 )}
               />
             </Grid>
@@ -169,7 +240,13 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="groupId"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Grupa" fullWidth select {...field}>
+                  <TextField
+                    label="Grupa"
+                    fullWidth
+                    select
+                    disabled={dataLoading}
+                    {...field}
+                  >
                     <MenuItem value={''}>{'Brak'}</MenuItem>
                     {PH_GROUPS.map((group) => (
                       <MenuItem key={group.id} value={group.id}>
@@ -185,7 +262,14 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 name="role"
                 control={control}
                 render={({ field }) => (
-                  <TextField label="Rola" fullWidth required select {...field}>
+                  <TextField
+                    label="Rola"
+                    fullWidth
+                    required
+                    select
+                    disabled={dataLoading}
+                    {...field}
+                  >
                     {roles.map((role) => (
                       <MenuItem key={role} value={role}>
                         {rolesMapped[role]}
@@ -195,18 +279,30 @@ export const AddUser = ({ isOpen, onClose }: Props) => {
                 )}
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Hasło tymczasowe"
+                fullWidth
+                required
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                disabled={dataLoading}
+              />
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            autoFocus
+          <LoadingButton
             color="success"
-            variant="contained"
+            loading={dataLoading}
+            loadingPosition="start"
             type="submit"
-            // TODO   disabled={}
+            startIcon={<SaveIcon />}
+            variant="contained"
           >
-            Zapisz
-          </Button>
+            <span>Zapisz</span>
+          </LoadingButton>
         </DialogActions>
       </form>
     </Dialog>

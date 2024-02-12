@@ -14,44 +14,62 @@ import { Profile } from '../views/Profile';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { plPL } from '@mui/x-date-pickers/locales';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { SnackbarProvider } from 'notistack';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <LocalizationProvider
-            dateAdapter={AdapterMoment}
-            localeText={
-              plPL.components.MuiLocalizationProvider.defaultProps.localeText
-            }
-            adapterLocale="pl"
-          >
-            <Box
-              sx={{ backgroundColor: 'rgb(238, 238, 238)', height: '100vh' }}
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <LocalizationProvider
+              dateAdapter={AdapterMoment}
+              localeText={
+                plPL.components.MuiLocalizationProvider.defaultProps.localeText
+              }
+              adapterLocale="pl"
             >
-              <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route
-                  element={
-                    <RequireAuth>
-                      <MainPage />
-                    </RequireAuth>
-                  }
+              <SnackbarProvider autoHideDuration={5000} dense hideIconVariant>
+                <Box
+                  sx={{
+                    backgroundColor: 'rgb(238, 238, 238)',
+                    height: '100vh',
+                  }}
                 >
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/users" element={<Users />} />
-                  <Route path="/groups" element={<Groups />} />
-                  <Route path="/subjects" element={<Subjects />} />
-                  <Route path="/schedule" element={<Schedule />} />
-                  <Route path="/profile" element={<Profile />} />
-                </Route>
-              </Routes>
-            </Box>
-          </LocalizationProvider>
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeProvider>
+                  <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route
+                      element={
+                        <RequireAuth>
+                          <MainPage />
+                        </RequireAuth>
+                      }
+                    >
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/users" element={<Users />} />
+                      <Route path="/groups" element={<Groups />} />
+                      <Route path="/subjects" element={<Subjects />} />
+                      <Route path="/schedule" element={<Schedule />} />
+                      <Route path="/profile" element={<Profile />} />
+                    </Route>
+                  </Routes>
+                </Box>
+              </SnackbarProvider>
+            </LocalizationProvider>
+          </BrowserRouter>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
