@@ -356,11 +356,13 @@ export const PH_EVENTS: CustomCalendarEvent[] = [
     title: 'Today',
     start: new Date(new Date().setHours(new Date().getHours() - 3)),
     end: new Date(new Date().setHours(new Date().getHours() + 3)),
+    roomNo: '1',
   },
   {
     id: 15,
     title: 'Point in Time Event',
     start: new Date(new Date().setHours(new Date().getHours() - 4)),
     end: new Date(new Date().setHours(new Date().getHours() - 3)),
+    roomNo: '2',
   },
 ];

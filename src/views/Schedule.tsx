@@ -9,17 +9,22 @@ import {
 import moment from 'moment';
 import { ChangeEvent, useMemo, useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { PH_EVENTS, PH_GROUPS } from '../PH';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { calendarTranslations } from '../common';
-import 'moment/locale/pl'
+import { calendarTranslations, convertGroupToEvent } from '../common';
+import 'moment/locale/pl';
+import { useQuery } from 'react-query';
+import {
+  getAllGroups,
+  getAllSubjects,
+  getGroup,
+  getUsersByRole,
+} from '../firebase/dataReaders';
+import { CustomCalendarEvent } from '../types';
 const mLocalizer = momentLocalizer(moment);
 
-// const timestamp = moment().unix()
-// console.log('timestamp', timestamp)
-// console.log('date',  moment.unix(1707760909).toDate())
-// console.log('date2',  new Date())
-
+// TODO fetch plan based on current user groupId, disable select if not admin
+// TODO loader?
+// TODO translate/improve agenda view?
 export const Schedule = () => {
   const [grp, setGrp] = useState<string>('');
 
@@ -28,6 +33,33 @@ export const Schedule = () => {
   ) => {
     setGrp(event.target.value);
   };
+  const { data: groupsData = [], isLoading: isGroupsDataLoading } = useQuery(
+    ['groups'],
+    getAllGroups
+  );
+
+  const { data: groupData, isLoading: isGroupDataLoading } = useQuery(
+    ['group', grp],
+    () => getGroup(grp),
+    { enabled: !!grp }
+  );
+
+  const { data: usersData } = useQuery(['teachers'], () =>
+    getUsersByRole('TEACHER')
+  );
+
+  const { data: subjectsData, isLoading } = useQuery(
+    ['subjects'],
+    getAllSubjects
+  );
+
+  const groupPlan: CustomCalendarEvent[] = useMemo(() => {
+    if (!groupData || !usersData || !subjectsData) {
+      return [];
+    }
+    const plan = convertGroupToEvent(groupData, usersData, subjectsData);
+    return plan;
+  }, [groupData, usersData, subjectsData]);
 
   const { defaultDate, messages } = useMemo(
     () => ({
@@ -52,8 +84,7 @@ export const Schedule = () => {
             value={grp}
             onChange={handleGrpChange}
           >
-            {/* // TODO USE REAL GRPS FROM API */}
-            {PH_GROUPS.map((group) => (
+            {groupsData.map((group) => (
               <MenuItem key={group.id} value={group.id}>
                 {group.title}
               </MenuItem>
@@ -62,10 +93,11 @@ export const Schedule = () => {
         </Grid>
         <Grid item xs={12} sx={{ height: 600 }}>
           <Calendar
+            key={groupData?.id}
             culture="pl"
             messages={messages}
             defaultDate={defaultDate}
-            events={PH_EVENTS ?? []}
+            events={groupPlan}
             localizer={mLocalizer}
             showMultiDayTimes
             step={60}

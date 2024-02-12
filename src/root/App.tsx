@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainPage } from '../pages/MainPage/MainPage';
 import { ThemeProvider } from './ThemeProvider';
-import { Dashboard } from '../views/Dashboard';
+// import { Dashboard } from '../views/Dashboard';
 import { LoginPage } from '../pages/LoginPage/LoginPage';
 import { RequireAuth } from './RequireAuth';
 import { AuthProvider } from './AuthProvider';
@@ -55,7 +55,8 @@ function App() {
                         </RequireAuth>
                       }
                     >
-                      <Route path="/" element={<Dashboard />} />
+                      {/* // TODO replace with proper dashboard? */}
+                      <Route path="/" element={<Schedule />} />
                       <Route path="/users" element={<Users />} />
                       <Route path="/groups" element={<Groups />} />
                       <Route path="/subjects" element={<Subjects />} />

@@ -43,7 +43,7 @@ export interface PlanSubject {
   id: string;
   start: Moment;
   end: Moment;
-  userId?: string; // only role=teacher
+  userId: string; // only role=teacher
   roomNo: string | number;
   subjectId: string; // id from Subject
 }
@@ -58,7 +58,6 @@ export interface GroupAPI extends Omit<GroupExtended, 'plan'> {
 
 export interface CustomCalendarEvent extends Event {
   id: string | number;
-  roomNo?: string | number;
-  userId?: string;
-  subjectId?: string;
+  roomNo: string | number;
+  teacher?: string;
 }
