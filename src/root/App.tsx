@@ -13,13 +13,20 @@ import { Subjects } from '../views/Subjects';
 import { Profile } from '../views/Profile';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { plPL } from '@mui/x-date-pickers/locales';
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
-          <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale='pl'>
+          <LocalizationProvider
+            dateAdapter={AdapterMoment}
+            localeText={
+              plPL.components.MuiLocalizationProvider.defaultProps.localeText
+            }
+            adapterLocale="pl"
+          >
             <Box
               sx={{ backgroundColor: 'rgb(238, 238, 238)', height: '100vh' }}
             >
