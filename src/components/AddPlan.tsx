@@ -44,7 +44,6 @@ export const AddPlan = ({ onSave, subjectsData }: Props) => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          {/* TODO Make select from api data */}
           <Controller
             name="subjectId"
             control={control}
@@ -87,7 +86,6 @@ export const AddPlan = ({ onSave, subjectsData }: Props) => {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          {/* TODO Make select from api data */}
           <Controller
             name="userId"
             control={control}

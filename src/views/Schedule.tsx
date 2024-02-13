@@ -23,8 +23,6 @@ import { CustomCalendarEvent } from '../types';
 import { useUserData } from '../atoms';
 const mLocalizer = momentLocalizer(moment);
 
-// TODO fetch plan based on current user groupId, disable select if not admin
-// TODO loader?
 // TODO translate/improve agenda view?
 export const Schedule = () => {
   const { userData } = useUserData();
@@ -34,12 +32,12 @@ export const Schedule = () => {
   ) => {
     setGrp(event.target.value);
   };
-  const { data: groupsData = [], isLoading: isGroupsDataLoading } = useQuery(
+  const { data: groupsData = [] } = useQuery(
     ['groups'],
     getAllGroups
   );
 
-  const { data: groupData, isLoading: isGroupDataLoading } = useQuery(
+  const { data: groupData } = useQuery(
     ['group', grp],
     () => getGroup(grp),
     { enabled: !!grp }
@@ -49,7 +47,7 @@ export const Schedule = () => {
     getUsersByRole('TEACHER')
   );
 
-  const { data: subjectsData, isLoading } = useQuery(
+  const { data: subjectsData } = useQuery(
     ['subjects'],
     getAllSubjects
   );

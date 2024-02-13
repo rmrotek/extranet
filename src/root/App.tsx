@@ -15,6 +15,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { plPL } from '@mui/x-date-pickers/locales';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SnackbarProvider } from 'notistack';
+import { ProtectedRoute } from '../components/ProtectedRoute';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,9 +56,30 @@ function App() {
                   >
                     {/* // TODO replace with proper dashboard? */}
                     <Route path="/" element={<Schedule />} />
-                    <Route path="/users" element={<Users />} />
-                    <Route path="/groups" element={<Groups />} />
-                    <Route path="/subjects" element={<Subjects />} />
+                    <Route
+                      path="/users"
+                      element={
+                        <ProtectedRoute>
+                          <Users />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/groups"
+                      element={
+                        <ProtectedRoute>
+                          <Groups />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/subjects"
+                      element={
+                        <ProtectedRoute>
+                          <Subjects />
+                        </ProtectedRoute>
+                      }
+                    />
                     <Route path="/schedule" element={<Schedule />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>

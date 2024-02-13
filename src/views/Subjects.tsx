@@ -18,7 +18,7 @@ export const Subjects = () => {
     setIsAddOpen((state) => !state);
   };
 
-  const { data, isLoading } = useQuery(['subjects'], getAllSubjects);
+  const { data } = useQuery(['subjects'], getAllSubjects);
 
   const columns = useMemo<MRT_ColumnDef<Subject>[]>(
     () => [

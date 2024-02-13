@@ -18,7 +18,7 @@ export const Groups = () => {
     setIsAddOpen((state) => !state);
   };
 
-  const { data: groupsData = [], isLoading } = useQuery(['groups'], getAllGroups);
+  const { data: groupsData = [] } = useQuery(['groups'], getAllGroups);
 
 
   const columns = useMemo<MRT_ColumnDef<GroupExtended>[]>(

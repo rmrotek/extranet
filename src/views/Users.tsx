@@ -11,8 +11,6 @@ import { useQuery } from 'react-query';
 import { getAllUsers } from '../firebase/dataReaders';
 import { MRT_Localization_PL } from 'material-react-table/locales/pl';
 
-// TODO delete users
-// TODO load indicator when data fetching
 export const Users = () => {
   const [isAddOpen, setIsAddOpen] = useState(false);
 

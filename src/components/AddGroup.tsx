@@ -24,7 +24,6 @@ interface Props {
   onClose: () => void;
 }
 
-// TODO add subjects & users
 export const AddGroup = ({ isOpen, onClose }: Props) => {
   const queryClient = useQueryClient();
 

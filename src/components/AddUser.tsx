@@ -22,7 +22,6 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
-// TODO get groups
 export const AddUser = ({ isOpen, onClose }: Props) => {
   const handleClose = (
     event: {},
